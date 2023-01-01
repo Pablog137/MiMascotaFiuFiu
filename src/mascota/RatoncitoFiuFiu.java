@@ -43,6 +43,7 @@ public class RatoncitoFiuFiu {
         sb.append(", salud=").append(salud);
         sb.append(", energia=").append(energia);
         sb.append(", feliz=").append(estasFeliz());
+        sb.append(", tramo edad = ").append(queTramoEdad());
         return sb.toString();
     }
 
@@ -126,7 +127,7 @@ public class RatoncitoFiuFiu {
     }
 
     public boolean tienesQuejas() {
-        if (hambre < 20 || salud < 25 || suciedad < 15) {
+        if (hambre < 25 || salud < 25 || suciedad > 75) {
             return true;
         } else {
             return false;
@@ -148,7 +149,6 @@ public class RatoncitoFiuFiu {
     }
 
     public void alimentar(float cantidadAlimento) {
-        double perdidaVida;
         if (hambre > cantidadAlimento) {
             hambre -= cantidadAlimento;
             ganarPeso(cantidadAlimento);
@@ -156,8 +156,7 @@ public class RatoncitoFiuFiu {
             aumentarSalud(cantidadAlimento);
         } else {
             hambre = 0;
-            perdidaVida = cantidadAlimento - hambre;
-            salud -= perdidaVida;
+            salud -= (cantidadAlimento - hambre);
             estasEnfermo();
 
         }

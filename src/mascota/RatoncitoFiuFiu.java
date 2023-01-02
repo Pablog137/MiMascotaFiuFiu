@@ -10,6 +10,7 @@ public class RatoncitoFiuFiu {
     private byte suciedad;
     private byte salud;
     private byte energia;
+    private byte felicidad;
 
     //Constantes
     private static final int INFANCIA = 0;
@@ -22,7 +23,7 @@ public class RatoncitoFiuFiu {
     private static final int EXTREMADAMENTEACTIVO = 100;
 
 
-    public RatoncitoFiuFiu(String nombre, int peso, byte hambre, byte suciedad, byte salud, byte energia) {
+    public RatoncitoFiuFiu(String nombre, int peso, byte hambre, byte suciedad, byte salud, byte energia, byte felicidad) {
         // Un objeto mascota.RatoncitoFiuFiu debería informar cuando nace...
         this.nombre = nombre;
         this.peso = peso;
@@ -30,6 +31,7 @@ public class RatoncitoFiuFiu {
         this.suciedad = suciedad;
         this.salud = salud;
         this.energia = energia;
+        this.felicidad = felicidad;
     }
 
 
@@ -179,6 +181,27 @@ public class RatoncitoFiuFiu {
     }
 
     private void aumentarEnergia(float cantidad) {
+       sumarEnergia(cantidad);
+    }
+
+    private void aumentarSalud(float cantidad) {
+        if (!estasEnfermo()) {
+            sumarSaludad(cantidad);
+        }
+    }
+
+    public boolean jugar(float cantidad) {
+        if (estasDormido() || estasEnfermo() || !estasFeliz()) {
+            return false;
+        } else {
+            sumarEnergia(cantidad);
+            sumarHambre(cantidad);
+            sumarFelicidad(cantidad);
+            return true;
+        }
+    }
+
+    private void sumarEnergia(float cantidad) {
         if (energia + cantidad <= 100) {
             energia += cantidad;
         } else {
@@ -186,15 +209,28 @@ public class RatoncitoFiuFiu {
         }
     }
 
-    private void aumentarSalud(float cantidad) {
-        if (!estasEnfermo()) {
-            if (salud + cantidad <= 100) {
-                salud += cantidad;
-            } else {
-                salud = 100;
-            }
+    private void sumarHambre(float cantidad) {
+        if (hambre + cantidad <= 100) {
+            hambre += cantidad;
+        } else {
+            hambre = 100;
         }
     }
 
+    private void sumarFelicidad(float cantidad) {
+        if (felicidad + cantidad <= 100) {
+            felicidad += cantidad;
+        } else {
+            felicidad = 100;
+        }
+    }
+
+    private void sumarSaludad(float cantidad) {
+        if (salud + cantidad <= 100) {
+            salud += cantidad;
+        } else {
+            salud = 100;
+        }
+    }
 
 }

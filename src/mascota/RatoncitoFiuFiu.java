@@ -85,7 +85,7 @@ public class RatoncitoFiuFiu {
     }
 
     public boolean estasEnfermo() {
-        if (salud < 40 && salud >= 1 || hambre == 0) {
+        if (salud < 40 && salud >= 1 || hambre == 0 || recibeMedicinas()) {
             return true;
         } else {
             return false;
@@ -122,14 +122,14 @@ public class RatoncitoFiuFiu {
             energia--;
         }
         if (peso > 0) {
-            peso--;
+            pierdePeso();
         }
 
 
     }
 
     public boolean tienesQuejas() {
-        if (hambre < 25 || salud < 25 || suciedad > 75) {
+        if (suciedad > 75) {
             return true;
         } else {
             return false;
@@ -167,8 +167,13 @@ public class RatoncitoFiuFiu {
     }
 
     public void curar(float cantidadMedicina) {
+        if (recibeMedicinas()) {
+            estasEnfermo();
+        }
         if (salud + cantidadMedicina <= 100) {
             aumentarSalud(cantidadMedicina);
+        } else {
+            salud = 100;
         }
 
     }
@@ -181,7 +186,7 @@ public class RatoncitoFiuFiu {
     }
 
     private void aumentarEnergia(float cantidad) {
-       sumarEnergia(cantidad);
+        sumarEnergia(cantidad);
     }
 
     private void aumentarSalud(float cantidad) {
@@ -233,4 +238,28 @@ public class RatoncitoFiuFiu {
         }
     }
 
+    private boolean pierdePeso() {
+        if (estasEnfermo()) {
+            peso -= 2;
+            return true;
+        } else {
+            peso--;
+            return false;
+        }
+    }
+
+    private boolean recibeMedicinas() {
+
+        int contador = 0;
+        if (!estasEnfermo()) {
+            contador++;
+            if (contador > 1) {
+                salud -= 5 * contador;
+            }
+            return true;
+        } else {
+            return false;
+        }
+
+    }
 }

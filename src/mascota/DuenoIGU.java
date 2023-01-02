@@ -48,10 +48,11 @@ public class DuenoIGU extends JFrame {
             Integer tramoEdad = mascota.queTramoEdad();
             String rutaImagenes;
             URL URLruta1, URLruta2;
-            boolean despierto, sucio, enfermo, despiertoSucio, despiertoEnfermo, despiertoEnfermoSucio, dormido, dormidoSucio, dormidoEnfermo, dormidoEnfermoSucio, muerto;
+            boolean despierto, sucio, enfermo, despiertoSucio, despiertoEnfermo, despiertoEnfermoSucio, dormido, dormidoSucio, dormidoEnfermo, dormidoEnfermoSucio, muerto, jugar;
 
             despierto = !mascota.estasDormido();
             dormido = !despierto;
+            jugar = mascota.estasFeliz();
             enfermo = mascota.estasEnfermo();
             sucio = mascota.estasSucio();
             despiertoSucio = despierto && sucio;
@@ -141,7 +142,7 @@ public class DuenoIGU extends JFrame {
 
     //Construir el marco
     public DuenoIGU() {
-        mascota = new RatoncitoFiuFiu("Nombre", 50, (byte) 50, (byte) 50, (byte) 100, (byte) 100,(byte) 50);
+        mascota = new RatoncitoFiuFiu("Nombre", 50, (byte) 50, (byte) 50, (byte) 100, (byte) 100, (byte) 50);
         temporizador = new Timer();
         temporizador.schedule(new Envejecimiento(mascota, labelGrafica), 0, 500);
         horaAnterior = System.currentTimeMillis();
@@ -215,7 +216,7 @@ public class DuenoIGU extends JFrame {
         jToolBar1.add(botonCurar, null);
         jToolBar1.add(botonLimpiar, null);
         jToolBar1.add(botonEstadisticas, null);
-        jToolBar1.add(botonJugar,null);
+        jToolBar1.add(botonJugar, null);
         contentPane.add(jSplitPane1, BorderLayout.CENTER);
         jSplitPane1.add(labelGrafica, JSplitPane.RIGHT);
         jSplitPane1.add(labelSalida, JSplitPane.LEFT);
@@ -251,9 +252,10 @@ public class DuenoIGU extends JFrame {
         labelSalida.setText(mascota.estadisticas());
         horaAnterior = System.currentTimeMillis();
     }
-    void botonJugar_mouseClicked(MouseEvent e){
-      mascota.jugar(10);
-      //Aqui accedemos al metodo y le asignamos un valor para cada interaccion
+
+    void botonJugar_mouseClicked(MouseEvent e) {
+        mascota.jugar(10);
+        //Aqui accedemos al metodo y le asignamos un valor para cada interaccion
     }
 
     void hazmeCaso() {

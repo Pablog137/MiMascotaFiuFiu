@@ -37,15 +37,14 @@ public class RatoncitoFiuFiu {
 
     public String estadisticas() {
         final StringBuilder sb = new StringBuilder();
-        sb.append("nombre='").append(nombre).append('\'');
-        sb.append(", edad=").append(edad);
-        sb.append(", peso=").append(peso);
-        sb.append(", hambre=").append(hambre);
-        sb.append(", suciedad=").append(suciedad);
-        sb.append(", salud=").append(salud);
-        sb.append(", energia=").append(energia);
-        sb.append(", feliz=").append(estasFeliz());
-        sb.append(", tramo edad = ").append(queTramoEdad());
+        sb.append("Nombre: ").append(nombre).append('\n');
+        sb.append("Edad: ").append(edad).append('\n');
+        sb.append("Peso: ").append(peso).append('\n');
+        sb.append("Hambre: ").append(hambre).append('\n');
+        sb.append("Suciedad: ").append(suciedad).append('\n');
+        sb.append("Salud: ").append(salud).append('\n');
+        ;
+        sb.append("Energia: ").append(energia).append('\n');
         return sb.toString();
     }
 
@@ -72,7 +71,7 @@ public class RatoncitoFiuFiu {
 
     public boolean estasDormido() {
         boolean dormido;
-        if (energia >= APATICO && energia < CANSADO) {
+        if (energia >= APATICO && energia < CANSADO || salud == 0) {
             dormido = true;
         } else if (energia >= CANSADO && energia < NORMAL) {
             dormido = true;
@@ -85,7 +84,7 @@ public class RatoncitoFiuFiu {
     }
 
     public boolean estasEnfermo() {
-        if (salud < 40 && salud >= 1 || hambre == 0 || recibeMedicinas()) {
+        if (salud < 40 && salud >= 1 || hambre == 0) {
             return true;
         } else {
             return false;
@@ -93,7 +92,7 @@ public class RatoncitoFiuFiu {
     }
 
     public boolean estasSucio() {
-        if (suciedad > 50) {
+        if (suciedad > 70) {
             return true;
         } else {
             return false;
@@ -101,7 +100,7 @@ public class RatoncitoFiuFiu {
     }
 
     public boolean estasMuerto() {
-        if (salud == 0) {
+        if (salud == 0 || energia == 0) {
             return true;
         }
         return false;
@@ -109,6 +108,7 @@ public class RatoncitoFiuFiu {
 
     public void envejecer(int segundos) {
         this.edad += segundos;
+
         if (hambre < 100) {
             hambre++;
         }
@@ -122,14 +122,14 @@ public class RatoncitoFiuFiu {
             energia--;
         }
         if (peso > 0) {
-            pierdePeso();
+            pierdePeso(edad);
         }
 
 
     }
 
     public boolean tienesQuejas() {
-        if (suciedad > 75) {
+        if (hambre > 75) {
             return true;
         } else {
             return false;
@@ -238,14 +238,18 @@ public class RatoncitoFiuFiu {
         }
     }
 
-    private boolean pierdePeso() {
+    private boolean pierdePeso(int edad) {
+        boolean retorno;
         if (estasEnfermo()) {
-            peso -= 2;
-            return true;
-        } else {
             peso--;
-            return false;
+            retorno = true;
+        } else {
+            retorno = false;
+            if (edad % 2 == 0) {
+                peso--;
+            }
         }
+        return retorno;
     }
 
     private boolean recibeMedicinas() {

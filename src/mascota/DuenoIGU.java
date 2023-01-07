@@ -78,7 +78,7 @@ public class DuenoIGU extends JFrame {
                     } else if (despiertoEnfermo) {
                         ruta1 = rutaImagenes + "/despierto-enfermo-" + tramoEdad.toString() + "-00.gif";
                         ruta2 = rutaImagenes + "/despierto-enfermo-" + tramoEdad.toString() + "-01.gif";
-                    } else if (despierto) {
+                    } else if (despierto && !muerto) {
                         ruta1 = rutaImagenes + "/despierto-" + tramoEdad.toString() + "-00.gif";
                         ruta2 = rutaImagenes + "/despierto-" + tramoEdad.toString() + "-01.gif";
                     } else if (dormidoEnfermoSucio) {
@@ -90,7 +90,7 @@ public class DuenoIGU extends JFrame {
                     } else if (dormidoEnfermo) {
                         ruta1 = rutaImagenes + "/dormido-enfermo-" + tramoEdad.toString() + "-00.gif";
                         ruta2 = rutaImagenes + "/dormido-enfermo-" + tramoEdad.toString() + "-01.gif";
-                    } else if (dormido) {
+                    } else if (dormido && !muerto) {
                         ruta1 = rutaImagenes + "/dormido-" + tramoEdad.toString() + "-00.gif";
                         ruta2 = rutaImagenes + "/dormido-" + tramoEdad.toString() + "-01.gif";
                     } else if (muerto) {
@@ -142,7 +142,7 @@ public class DuenoIGU extends JFrame {
 
     //Construir el marco
     public DuenoIGU() {
-        mascota = new RatoncitoFiuFiu("Nombre", 50, (byte) 50, (byte) 50, (byte) 100, (byte) 100, (byte) 50);
+        mascota = new RatoncitoFiuFiu("RatonFiuFiu", 50, (byte) 50, (byte) 50, (byte) 100, (byte) 100, (byte) 50);
         temporizador = new Timer();
         temporizador.schedule(new Envejecimiento(mascota, labelGrafica), 0, 500);
         horaAnterior = System.currentTimeMillis();

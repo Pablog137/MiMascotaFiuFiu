@@ -22,6 +22,7 @@ public class DuenoIGU extends JFrame {
     private JButton botonCurar = new JButton();
     private JButton botonAlimentar = new JButton();
     private JButton botonJugar = new JButton();
+    private JButton botonProbarSuerte = new JButton();
     private TitledBorder titledBorder1;
     private JSplitPane jSplitPane1 = new JSplitPane();
     private JLabel labelGrafica = new JLabel();
@@ -106,6 +107,11 @@ public class DuenoIGU extends JFrame {
                         ruta2 = rutaImagenes + "/quejarse-" + tramoEdad.toString() + "-01.gif";
                     }
                 }
+                if (mascota.estasMuerto()) {
+                    ruta1 = rutaImagenes + "/muerto.gif";
+                    ruta2 = rutaImagenes + "/muerto.gif";
+                }
+
 
                 try {
                     URLruta1 = new URL(ruta1);
@@ -142,7 +148,7 @@ public class DuenoIGU extends JFrame {
 
     //Construir el marco
     public DuenoIGU() {
-        mascota = new RatoncitoFiuFiu("RatonFiuFiu", 50, (byte) 50, (byte) 50, (byte) 100, (byte) 100, (byte) 50,(byte)0);
+        mascota = new RatoncitoFiuFiu("RatonFiuFiu", 50, (byte) 50, (byte) 50, (byte) 100, (byte) 100, (byte) 50, (byte) 0);
         temporizador = new Timer();
         temporizador.schedule(new Envejecimiento(mascota, labelGrafica), 0, 500);
         horaAnterior = System.currentTimeMillis();
@@ -173,6 +179,13 @@ public class DuenoIGU extends JFrame {
         botonJugar.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
                 botonJugar_mouseClicked(e);
+            }
+        });
+
+        botonProbarSuerte.setText("Suerte");
+        botonProbarSuerte.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent e) {
+                botonProbarSuerte_mouseClicked(e);
             }
         });
         botonEstadisticas.setText("Estadisticas");
@@ -217,6 +230,7 @@ public class DuenoIGU extends JFrame {
         jToolBar1.add(botonLimpiar, null);
         jToolBar1.add(botonEstadisticas, null);
         jToolBar1.add(botonJugar, null);
+        jToolBar1.add(botonProbarSuerte, null);
         contentPane.add(jSplitPane1, BorderLayout.CENTER);
         jSplitPane1.add(labelGrafica, JSplitPane.RIGHT);
         jSplitPane1.add(labelSalida, JSplitPane.LEFT);
@@ -256,6 +270,10 @@ public class DuenoIGU extends JFrame {
     void botonJugar_mouseClicked(MouseEvent e) {
         mascota.jugar(10);
         //Aqui accedemos al metodo y le asignamos un valor para cada interaccion
+    }
+
+    void botonProbarSuerte_mouseClicked(MouseEvent e) {
+        mascota.probarSuerte(20);
     }
 
     void hazmeCaso() {

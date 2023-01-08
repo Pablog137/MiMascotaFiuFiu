@@ -13,16 +13,12 @@ public class RatoncitoFiuFiu {
     private byte felicidad;
 
     private byte enfermedad;
+    private int contador; //Último método
 
     //Constantes
     private static final int INFANCIA = 0;
     private static final int ADULTA = 1;
     private static final int VEJEZ = 2;
-    private static final int APATICO = 0;
-    private static final int CANSADO = 30;
-    private static final int NORMAL = 50;
-    private static final int ACTIVO = 70;
-    private static final int EXTREMADAMENTEACTIVO = 100;
 
 
     public RatoncitoFiuFiu(String nombre, int peso, byte hambre, byte suciedad, byte salud, byte energia, byte felicidad, byte enfermedad) {
@@ -51,12 +47,14 @@ public class RatoncitoFiuFiu {
     }
 
     public void limpiar(float esfuerzoHigienico) {
-        if (suciedad - esfuerzoHigienico > 0) {
-            suciedad -= esfuerzoHigienico;
-        } else {
-            suciedad = 0;
+        if (!estasMuerto()) {
+            if (suciedad - esfuerzoHigienico > 0) {
+                suciedad -= esfuerzoHigienico;
+            } else {
+                suciedad = 0;
+            }
+            cuantoEnfermo(esfuerzoHigienico);
         }
-        cuantoEnfermo(esfuerzoHigienico);
 
     }
 
@@ -75,7 +73,7 @@ public class RatoncitoFiuFiu {
 
         if (edad <= 500) {
             return INFANCIA;
-        } else if (edad >= 500 && energia < 1000) {
+        } else if (edad >= 500 && edad < 1000) {
             return ADULTA;
         } else {
             return VEJEZ;
@@ -126,59 +124,65 @@ public class RatoncitoFiuFiu {
     }
 
     public boolean estasMuerto() {
-        if (salud == 0 || energia == 0 || enfermedad == 100) {
+        if (salud == 0 || energia == 0 || enfermedad == 100 || peso == 0) {
             return true;
         }
         return false;
     }
 
     public void envejecer(int segundos) {
-        this.edad += segundos;
+        if (!estasMuerto()) {
+            this.edad += segundos;
+            if (edad % 100 == 0) {
+                ataque();
+            }
 
-        if (hambre < 100) {
-            hambre++;
-        }
-        if (suciedad < 100) {
-            suciedad++;
-        }
-        if (salud > 0) {
-            salud--;
+            if (hambre < 100) {
+                hambre++;
+            }
+            if (suciedad < 100) {
+                suciedad++;
+            }
+            if (salud > 0) {
+                salud--;
+            }
+
             if (salud == 0) {
                 estasMuerto();
             }
-        }
-        if (energia > 0) {
-            energia--;
+            if (energia > 0) {
+                energia--;
+            }
             if (energia == 0) {
                 estasMuerto();
             }
-        }
-        if (peso > 0) {
-            pierdePeso(edad);
-        }
-        if (queTramoEdad() == INFANCIA || queTramoEdad() == ADULTA) {
-            if (edad % 2 == 0) {
-                enfermedad++;
+            if (peso > 0) {
+                pierdePeso(edad);
             }
-        } else {
-            if (enfermedad < 100) {
-                if (estasEnfermo()) {
-                    enfermedad += 2;
-                } else {
+            if (queTramoEdad() == INFANCIA || queTramoEdad() == ADULTA) {
+                if (edad % 2 == 0) {
                     enfermedad++;
+                }
+            } else {
+                if (enfermedad < 100) {
+                    if (estasEnfermo()) {
+                        enfermedad += 2;
+                    } else {
+                        enfermedad++;
+                    }
                 }
                 if (enfermedad == 100) {
                     estasMuerto();
                 }
+
             }
-
         }
-
 
     }
 
+
     public boolean tienesQuejas() {
-        if (hambre > 75 && !estasEnfermo()) {
+        if (hambre > 75 && !estasEnfermo() && !estasDormido()) {
             return true;
         } else {
             return false;
@@ -200,35 +204,38 @@ public class RatoncitoFiuFiu {
     }
 
     public void alimentar(float cantidadAlimento) {
-        if (hambre > cantidadAlimento) {
-            ganarPeso(cantidadAlimento);
-            aumentarEnergia(cantidadAlimento);
-            aumentarSalud(cantidadAlimento);
-            if (queTramoEdad() == INFANCIA) {
-                hambre -= cantidadAlimento;
-            } else if (queTramoEdad() == ADULTA) {
-                hambre -= cantidadAlimento + 5;
+        if (!estasMuerto()) {
+            if (hambre - cantidadAlimento > 0) {
+                ganarPeso(cantidadAlimento);
+                aumentarEnergia(cantidadAlimento);
+                aumentarSalud(cantidadAlimento);
+                if (queTramoEdad() == INFANCIA) {
+                    hambre -= cantidadAlimento;
+                } else if (queTramoEdad() == ADULTA) {
+                    hambre -= cantidadAlimento + 5;
+                } else {
+                    hambre -= cantidadAlimento - 3;
+                }
             } else {
-                hambre -= cantidadAlimento - 3;
-            }
-        } else {
-            hambre = 0;
-            salud -= (cantidadAlimento - hambre);
-            estasEnfermo();
+                hambre = 0;
+                salud -= (cantidadAlimento - hambre);
+                estasEnfermo();
 
+            }
         }
 
 
     }
 
     public void curar(float cantidadMedicina) {
-        recibeMedicinas();
-        if (salud + cantidadMedicina <= 100) {
-            aumentarSalud(cantidadMedicina);
-        } else {
-            salud = 100;
+        if (!estasMuerto()) {
+            recibeMedicinas();
+            if (salud + cantidadMedicina <= 100) {
+                aumentarSalud(cantidadMedicina);
+            } else {
+                salud = 100;
+            }
         }
-
     }
 
     private void ganarPeso(float cantidad) {
@@ -309,18 +316,56 @@ public class RatoncitoFiuFiu {
         return retorno;
     }
 
-    private boolean recibeMedicinas() {
-        int contador = 0;
+    private void recibeMedicinas() {
+        //Si una mascota sana recibe medicinas enferma
         if (!estasEnfermo()) {
-            enfermedad = 70;
-            contador++;
-            if (contador > 1) {
-                enfermedad += 5;
+            if (enfermedad < 70) { //Para que le baje la enfermedad cuando tiene +70
+                enfermedad = 70;
             }
-            return true;
+            contador++;
+            estasEnfermo();
+            if (contador > 1) {
+                if (enfermedad + 5 * contador < 100) {
+                    enfermedad += 5 * contador;
+                } else {
+                    enfermedad = 100;
+                }
+            }
+
+
+        }
+    }
+
+    private void ataque() {  //Implementación
+        int random = (int) (Math.random() * (60 - 20) + 20);
+        if (salud - random > 0) {
+            salud -= random;
         } else {
-            return false;
+            salud = 0;
+            estasMuerto();
         }
 
+    }
+
+    public void probarSuerte(float vida) {  //Implementación
+        if (!estasMuerto()) {
+            int suerte = (int) (Math.random() * (10 - 1) + 1);
+            if (suerte % 2 == 0) {
+                if (salud + vida < 100) {
+                    salud += vida;
+                } else {
+                    salud = 100;
+                }
+            } else if (suerte % 2 != 0 && suerte != 3) {
+                if (salud - vida > 0) {
+                    salud -= vida;
+                } else {
+                    salud = 0;
+                    estasMuerto();
+                }
+            } else {
+                salud = 100;
+            }
+        }
     }
 }
